@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+}
+
+group 'com.annotationconstraints'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly project(':annotation-constraints')
+    annotationProcessor project(':annotation-constraints')
+}
+
+test {
+    useJUnitPlatform()
+}
