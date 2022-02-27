@@ -3,17 +3,15 @@ plugins {
     id 'maven-publish'
 }
 
-group 'com.annotationconstraints'
-version '1.0.0'
-
-repositories {
-    mavenCentral()
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
-dependencies {
-    implementation 'com.squareup:javapoet:1.13.0'
-}
-
-test {
-    useJUnitPlatform()
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
 }

@@ -2,16 +2,10 @@ plugins {
     id 'java-library'
 }
 
-group 'com.annotationconstraints'
-version '1.0.0'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    compileOnly project(':annotation-constraints')
-    annotationProcessor project(':annotation-constraints')
+    compileOnly project(':annotation-constraints-processor')
+    annotationProcessor project(':annotation-constraints-processor')
+    implementation project(':annotation-constraints')
 }
 
 test {

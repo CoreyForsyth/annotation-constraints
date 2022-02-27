@@ -9,5 +9,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.CLASS)
 public @interface AnnotationConstraint
 {
+    /**
+     * @return An implementation of AnnotationValidator
+     */
     Class<? extends AnnotationValidator<?>> value();
 }

@@ -8,7 +8,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.WildcardTypeName;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -58,7 +60,6 @@ public class AnnotationConstraintsProcessor extends AbstractProcessor
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
     {
         if (roundEnv.processingOver()) {
-            this.writeProcessorClass();
             return false;
         }
         Set<? extends Element> userAnnotations = roundEnv.getElementsAnnotatedWith(AnnotationConstraint.class);
@@ -69,11 +70,11 @@ public class AnnotationConstraintsProcessor extends AbstractProcessor
             {
                 javaFile.writeTo(processingEnv.getFiler());
                 generatedProcessors.add(GENERATED_PACKAGE + "." +  userAnnotation.getSimpleName() + GENERATED_PROCESSOR_SUFFIX);
+                writeProcessorClass(userAnnotation);
             }
             catch (IOException e)
             {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Failed to create meta inf service info");
-                e.printStackTrace();
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Failed to write the generated annotation processor class", userAnnotation);
             }
         }
         return false;
@@ -157,11 +158,10 @@ public class AnnotationConstraintsProcessor extends AbstractProcessor
             .addStatement("$1T annotationConstraint = $2T.class.getAnnotation($1T.class)", AnnotationConstraint.class, annotationToBeProcessedClassName)
             .beginControlFlow("for ($T element : roundEnv.getElementsAnnotatedWith($T.class))", Element.class, annotationToBeProcessedClassName)
             .addStatement("$1T testAnnotation = element.getAnnotation($1T.class)", annotationToBeProcessedClassName)
-            .addStatement("processingEnv.getMessager().printMessage($T.Kind.NOTE, \"test annotation: \" + testAnnotation.toString())", Diagnostic.class)
             .addStatement("$1T annotationValidator = new $1T()", annotationValidator)
             .addStatement("boolean validated = annotationValidator.validate(testAnnotation, element, processingEnv.getMessager())")
             .beginControlFlow("if (!validated)")
-            .addStatement("processingEnv.getMessager().printMessage($T.Kind.ERROR, String.format(\"Failed to validated annotation %s\", testAnnotation), element)", Diagnostic.class)
+            .addStatement("processingEnv.getMessager().printMessage($T.Kind.ERROR, String.format(\"Failed to validate annotation %s\", testAnnotation), element)", Diagnostic.class)
             .endControlFlow()
             .endControlFlow()
             .addStatement("return true")
@@ -178,17 +178,25 @@ public class AnnotationConstraintsProcessor extends AbstractProcessor
         return JavaFile.builder(GENERATED_PACKAGE, userAnnotationProcessor).build();
     }
 
-    public void writeProcessorClass() {
+    public void writeProcessorClass(Element originatingElement) {
+        try {
+            FileObject fileObject = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH,"", "META-INF/services/javax.annotation.processing.Processor");
+            new BufferedReader(new InputStreamReader(fileObject.openInputStream()))
+                .lines().forEach(generatedProcessors::add);
+        }
+        catch (IOException ignored)
+        {
+        }
         try
         {
-            FileObject fileObject = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/javax.annotation.processing.Processor");
+            FileObject fileObject = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/javax.annotation.processing.Processor", originatingElement);
             PrintWriter printWriter = new PrintWriter(fileObject.openWriter());
             this.generatedProcessors.forEach(printWriter::println);
             printWriter.close();
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Failed to write the Processor config file");
         }
     }
 

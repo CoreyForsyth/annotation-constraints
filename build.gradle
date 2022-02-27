@@ -1,8 +1,7 @@
 allprojects {
     group 'com.annotationconstraints'
     version '1.0.0'
-}
-
-repositories {
-    mavenCentral()
+    repositories {
+        mavenCentral()
+    }
 }
