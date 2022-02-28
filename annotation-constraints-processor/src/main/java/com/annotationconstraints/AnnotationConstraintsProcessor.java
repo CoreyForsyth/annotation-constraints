@@ -159,7 +159,8 @@ public class AnnotationConstraintsProcessor extends AbstractProcessor
             .beginControlFlow("for ($T element : roundEnv.getElementsAnnotatedWith($T.class))", Element.class, annotationToBeProcessedClassName)
             .addStatement("$1T testAnnotation = element.getAnnotation($1T.class)", annotationToBeProcessedClassName)
             .addStatement("$1T annotationValidator = new $1T()", annotationValidator)
-            .addStatement("boolean validated = annotationValidator.validate(testAnnotation, element, processingEnv.getMessager())")
+            .addStatement("annotationValidator.init(processingEnv, element)", annotationValidator)
+            .addStatement("boolean validated = annotationValidator.validate(testAnnotation)")
             .beginControlFlow("if (!validated)")
             .addStatement("processingEnv.getMessager().printMessage($T.Kind.ERROR, String.format(\"Failed to validate annotation %s\", testAnnotation), element)", Diagnostic.class)
             .endControlFlow()
@@ -178,7 +179,7 @@ public class AnnotationConstraintsProcessor extends AbstractProcessor
         return JavaFile.builder(GENERATED_PACKAGE, userAnnotationProcessor).build();
     }
 
-    public void writeProcessorClass(Element originatingElement) {
+    private void writeProcessorClass(Element originatingElement) {
         try {
             FileObject fileObject = processingEnv.getFiler().getResource(StandardLocation.SOURCE_PATH,"", "META-INF/services/javax.annotation.processing.Processor");
             new BufferedReader(new InputStreamReader(fileObject.openInputStream()))

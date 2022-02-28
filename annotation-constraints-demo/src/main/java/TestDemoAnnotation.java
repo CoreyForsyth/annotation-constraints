@@ -2,11 +2,9 @@ import com.annotationconstraints.demo.TestAnnotation;
 
 public class TestDemoAnnotation
 {
-    public static void main(String[] args) {
-        testMethod();
-    }
+    // Change the value to >= 2 to pass validation
+    @TestAnnotation(2)
+    public void testMethod() {
 
-    @TestAnnotation(3)
-    private static void testMethod() {
     }
 }

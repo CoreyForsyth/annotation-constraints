@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 @AnnotationConstraint(TestAnnotationValidator.class)
 public @interface TestAnnotation
 {
-    int value() default 2;
+    int value();
 }

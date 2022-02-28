@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface AnnotationConstraint
 {
     /**
-     * @return An implementation of AnnotationValidator
+     * @return An implementation class of AnnotationValidator
      */
     Class<? extends AnnotationValidator<?>> value();
 }
