@@ -1,6 +1,6 @@
 rootProject.name = 'annotation-constraints-parent'
 include 'annotation-constraints'
-include 'annotation-constraints-demo-annotation'
-include 'annotation-constraints-demo'
 include 'annotation-constraints-processor'
+include 'demo-annotation'
+include 'demo'
 

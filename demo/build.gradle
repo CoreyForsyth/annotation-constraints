@@ -1,0 +1,12 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    compileOnly project(":demo-annotation")
+    annotationProcessor project(":demo-annotation")
+}
+
+test {
+    useJUnitPlatform()
+}
