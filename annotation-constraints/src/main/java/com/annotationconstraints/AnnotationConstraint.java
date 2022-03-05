@@ -13,4 +13,10 @@ public @interface AnnotationConstraint
      * @return An implementation class of AnnotationValidator
      */
     Class<? extends AnnotationValidator<?>> value();
+
+    /**
+     * @return The name of annotation this is an alias for, otherwise blank
+     * Any elements defined in this annotation much match the original annotation exactly
+     */
+    String aliasFor() default "";
 }

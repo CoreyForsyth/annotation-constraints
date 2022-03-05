@@ -6,13 +6,14 @@ public class TestAnnotationValidator extends AnnotationValidator<TestAnnotation>
 {
     /**
      * This simple implementation of {@link AnnotationValidator<TestAnnotation>} validates
-     * the value is >= 2
+     * the value of any {@link TestAnnotation} is > 0
+     *
      * @param annotation The instance of user annotation that is to be validated
-     * @return true if the value is >= 2
+     * @return true if the value is > 0
      */
     @Override
     public boolean validate(TestAnnotation annotation)
     {
-        return annotation.value() >= 2;
+        return annotation.value() > 0;
     }
 }

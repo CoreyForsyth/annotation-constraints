@@ -2,7 +2,7 @@ package com.annotationconstraints;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import javax.lang.model.element.AnnotationMirror;
@@ -90,7 +90,7 @@ public class AnnotationUtil
         return Optional.of(annotationMirror)
             .map(AnnotationMirror::getElementValues)
             .map(Map::entrySet)
-            .orElseGet(HashSet::new).stream()
+            .orElse(Collections.emptySet()).stream()
             .filter(kv -> kv.getKey().getSimpleName().contentEquals(targetElement))
             .findFirst()
             .map(Map.Entry::getValue)

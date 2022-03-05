@@ -8,6 +8,7 @@ import javax.lang.model.element.Element;
 
 /**
  * This class is used to provide a mechanism to validate an annotation's elements
+ *
  * @param <T> The user annotation to be validated. This annotation must be annotated with {@link AnnotationConstraint}
  */
 public abstract class AnnotationValidator<T extends Annotation>
@@ -17,8 +18,9 @@ public abstract class AnnotationValidator<T extends Annotation>
 
     /**
      * Called before {@link #validate} to provide the processing env and the element
+     *
      * @param processingEnv The ProcessingEnvironment provided for annotation processing
-     * @param element The Element corresponding to the user's annotation T
+     * @param element       The Element corresponding to the user's annotation T
      */
     final public void init(ProcessingEnvironment processingEnv, Element element)
     {
@@ -34,6 +36,7 @@ public abstract class AnnotationValidator<T extends Annotation>
      * <p>The ProcessingEnvironment and the Element may be used in the validation, and to provide
      * enhanced messaging to the user.
      * They are provided as a way to provide more information to the user during compilation if required.
+     *
      * @param annotation The instance of user annotation that is to be validated
      * @return false if the annotation is invalid, true otherwise
      * @see javax.annotation.processing.Processor#process(Set, RoundEnvironment)

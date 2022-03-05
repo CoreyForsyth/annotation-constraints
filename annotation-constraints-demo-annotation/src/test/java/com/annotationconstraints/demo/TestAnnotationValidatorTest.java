@@ -1,7 +1,8 @@
 package com.annotationconstraints.demo;
 
 import java.lang.annotation.Annotation;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 class TestAnnotationValidatorTest
@@ -11,12 +12,14 @@ class TestAnnotationValidatorTest
     void testAnnotationValidatorValid()
     {
         TestAnnotationValidator testAnnotationValidator = new TestAnnotationValidator();
-        TestAnnotation testAnnotation = new TestAnnotation(){
+        TestAnnotation testAnnotation = new TestAnnotation()
+        {
             @Override
             public Class<? extends Annotation> annotationType()
             {
                 return TestAnnotation.class;
             }
+
             @Override
             public int value()
             {
@@ -24,27 +27,29 @@ class TestAnnotationValidatorTest
             }
         };
         boolean isValidAnnotation = testAnnotationValidator.validate(testAnnotation);
-        assertFalse(isValidAnnotation);
+        assertTrue(isValidAnnotation);
     }
 
     @Test
     void testAnnotationValidatorInvalid()
     {
         TestAnnotationValidator testAnnotationValidator = new TestAnnotationValidator();
-        TestAnnotation testAnnotation = new TestAnnotation(){
+        TestAnnotation testAnnotation = new TestAnnotation()
+        {
             @Override
             public Class<? extends Annotation> annotationType()
             {
                 return TestAnnotation.class;
             }
+
             @Override
             public int value()
             {
-                return 2;
+                return 0;
             }
         };
         boolean isValidAnnotation = testAnnotationValidator.validate(testAnnotation);
-        assertTrue(isValidAnnotation);
+        assertFalse(isValidAnnotation);
     }
-    
+
 }
