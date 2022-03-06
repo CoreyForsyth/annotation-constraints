@@ -5,6 +5,7 @@ plugins {
 dependencies {
     compileOnly project(":demo-annotation")
     annotationProcessor project(":demo-annotation")
+    compileOnly 'javax.validation:validation-api:2.0.1.Final'
 }
 
 test {
