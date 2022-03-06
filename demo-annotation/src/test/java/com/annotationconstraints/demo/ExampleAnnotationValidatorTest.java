@@ -5,19 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
-class TestAnnotationValidatorTest
+class ExampleAnnotationValidatorTest
 {
 
     @Test
     void testAnnotationValidatorValid()
     {
-        TestAnnotationValidator testAnnotationValidator = new TestAnnotationValidator();
-        TestAnnotation testAnnotation = new TestAnnotation()
+        ExampleAnnotationValidator exampleAnnotationValidator = new ExampleAnnotationValidator();
+        ExampleAnnotation testAnnotation = new ExampleAnnotation()
         {
             @Override
             public Class<? extends Annotation> annotationType()
             {
-                return TestAnnotation.class;
+                return ExampleAnnotation.class;
             }
 
             @Override
@@ -26,20 +26,20 @@ class TestAnnotationValidatorTest
                 return 1;
             }
         };
-        boolean isValidAnnotation = testAnnotationValidator.validate(testAnnotation);
+        boolean isValidAnnotation = exampleAnnotationValidator.validate(testAnnotation);
         assertTrue(isValidAnnotation);
     }
 
     @Test
     void testAnnotationValidatorInvalid()
     {
-        TestAnnotationValidator testAnnotationValidator = new TestAnnotationValidator();
-        TestAnnotation testAnnotation = new TestAnnotation()
+        ExampleAnnotationValidator exampleAnnotationValidator = new ExampleAnnotationValidator();
+        ExampleAnnotation exampleAnnotation = new ExampleAnnotation()
         {
             @Override
             public Class<? extends Annotation> annotationType()
             {
-                return TestAnnotation.class;
+                return ExampleAnnotation.class;
             }
 
             @Override
@@ -48,7 +48,7 @@ class TestAnnotationValidatorTest
                 return 0;
             }
         };
-        boolean isValidAnnotation = testAnnotationValidator.validate(testAnnotation);
+        boolean isValidAnnotation = exampleAnnotationValidator.validate(exampleAnnotation);
         assertFalse(isValidAnnotation);
     }
 

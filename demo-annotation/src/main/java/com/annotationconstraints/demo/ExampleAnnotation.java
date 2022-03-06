@@ -5,8 +5,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.TYPE})
-@AnnotationConstraint(TestAnnotationValidator.class)
-public @interface TestAnnotation
+@AnnotationConstraint(ExampleAnnotationValidator.class)
+public @interface ExampleAnnotation
 {
     int value();
 }
