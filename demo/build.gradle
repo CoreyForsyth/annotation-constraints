@@ -7,7 +7,3 @@ dependencies {
     annotationProcessor project(":demo-annotation")
     compileOnly 'javax.validation:validation-api:2.0.1.Final'
 }
-
-test {
-    useJUnitPlatform()
-}

@@ -1,0 +1,48 @@
+plugins {
+    id('annotation-constraints.java')
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            pom {
+                name = rootProject.name
+                url.set( "https://github.com/CoreyForsyth/annotation-constraints" )
+                developers {
+                    developer {
+                        name.set("Corey Forsyth")
+                        organizationUrl.set("https://github.com/CoreyForsyth")
+                    }
+                }
+                scm {
+                    connection.set( "scm:git:git://github.com/CoreyForsyth/annotation-constraints.git" )
+                    url.set( "https://github.com/CoreyForsyth" )
+                }
+                issueManagement {
+                    system.set( "GitHub" )
+                    url.set( "https://github.com/CoreyForsyth/issues" )
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = 'OSSRH'
+            def snapshot = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            def staging = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            url = version.endsWith('SNAPSHOT') ? snapshot : staging
+            credentials {
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.maven
+}

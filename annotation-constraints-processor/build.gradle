@@ -1,13 +1,5 @@
 plugins {
-    id 'java-library'
-    id 'maven-publish'
-}
-
-java {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
-    withJavadocJar()
-    withSourcesJar()
+    id 'annotation-constraints.java-library'
 }
 
 dependencies {
@@ -15,16 +7,4 @@ dependencies {
     implementation 'com.squareup:javapoet:1.13.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-}
-
-test {
-    useJUnitPlatform()
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-        }
-    }
 }
