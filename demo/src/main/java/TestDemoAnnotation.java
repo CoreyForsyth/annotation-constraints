@@ -8,11 +8,10 @@ public class TestDemoAnnotation
     /**
      * Set the value to < 1 to fail the {@link ExampleAnnotationValidator}
      * Set the value to > 1 to fail the {@link ExampleAnnotationAliasValidator}
-     * Set the regexp value to an invalid regex to fail the {@link com.annotationconstraints.demo.PatternValidator}
+     * Set the regexp value to an invalid regexp to fail the {@link com.annotationconstraints.demo.PatternValidator}
      */
     @ExampleAnnotation(1)
-    @Pattern(regexp = "[a]")
-    public void testMethod()
+    public void testMethod(@Pattern(regexp = "[a]") String pattern)
     {
 
     }

@@ -5,6 +5,12 @@ plugins {
     id 'signing'
 }
 
+jar {
+    from('../LICENSE') {
+        into("META-INF")
+    }
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
