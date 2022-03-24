@@ -16,7 +16,8 @@ publishing {
         maven(MavenPublication) {
             from components.java
             pom {
-                name = rootProject.name
+                name = project.name
+                description = project.description
                 url.set( "https://github.com/CoreyForsyth/annotation-constraints" )
                 developers {
                     developer {
@@ -31,6 +32,12 @@ publishing {
                 issueManagement {
                     system.set( "GitHub" )
                     url.set( "https://github.com/CoreyForsyth/issues" )
+                }
+                licenses {
+                    license {
+                        name.set('MIT License')
+                        url.set('http://www.opensource.org/licenses/mit-license.php')
+                    }
                 }
             }
         }

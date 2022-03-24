@@ -1,3 +1,7 @@
+buildscript {
+    description = "Example annotations with custom validation"
+}
+
 plugins {
     id 'annotation-constraints.java-library'
 }

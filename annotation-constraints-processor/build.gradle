@@ -1,3 +1,7 @@
+buildscript {
+    description = "Annotation processor for annotation-constraints"
+}
+
 plugins {
     id 'annotation-constraints.java-library'
 }
