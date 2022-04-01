@@ -2,7 +2,9 @@
 
 An annotation processor that allows you to add compile-time validation to any annotation.
 
-It works by generating a separate annotation processor for every user-defined annotation that are annotated with an `@AnnotationConstraint`.
+It works by generating separate annotation processors for every user-defined annotation with a validator defined.
+
+Validators are defined using the `@AnnotationConstraint` annotation.
 
 ## Purpose
 
