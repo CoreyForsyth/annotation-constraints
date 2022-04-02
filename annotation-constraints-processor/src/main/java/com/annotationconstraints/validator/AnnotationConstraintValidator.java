@@ -11,7 +11,6 @@ public class AnnotationConstraintValidator extends AnnotationValidator<Annotatio
     @Override
     public boolean validate(AnnotationConstraintAlias annotation)
     {
-        System.out.println("AnnotationConstraint ");
         return annotation.aliasFor().equals("") || FQCN.matcher(annotation.aliasFor()).matches();
     }
 }
