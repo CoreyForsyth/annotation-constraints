@@ -24,6 +24,9 @@ This annotation takes in a string that must be a valid regular expression.
 This library allows you to add a compile-time check, to ensure the pattern is a valid regular expression.
 An example is provided in demo-annotation that implements this functionality.
 
+There are implementations of annotation validators out there, like the [hibernate-validator-annotation-processor](https://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#validator-annotation-processor).
+This library is simply meant to provide an easy-to-use interface to generate them automatically.
+
 
 ## Usage
 The `@AnnotationConstraint` annotation is used to set the user defined validator.
@@ -109,12 +112,44 @@ Maven example:
 Now, you can create your own annotation validators.
 Users of your library just need to add it as an annotation processor, like above.
 
-# Annotation Alias
+# Annotation Aliases
 
 This library is designed to add validation directly to the definition of an annotation.
-
 It also provides a way to add validation to any third-party annotations. A user can create an alias annotation that is an alias for a third-party target annotation.
-A given example is the `@PatternAlias` and `@PatternValidator` in demo-annotation, which validates the regular expression in the third-party `@Pattern` annotation.
 
-This is accomplished through the `aliasFor` string in `@AnnotationConstraint`. It is the fully qualified classname for the target annotation.
+A given example is the `@PatternAlias` annotation, an alias for the `@Pattern` annotation from Java/Jakarta EE.
+```java
+@AnnotationConstraint(value = PatternValidator.class, aliasFor = "javax.validation.constraints.Pattern")
+public @interface PatternAlias
+{
+    String regexp();
+}
+```
+
+Example validator:
+```java
+public class PatternValidator extends AnnotationValidator<PatternAlias>
+{
+    @Override
+    public boolean validate(PatternAlias annotation)
+    {
+        try
+        {
+            Pattern.compile(annotation.regexp());
+            return true;
+        } catch (PatternSyntaxException e) {
+            return false;
+        }
+    }
+}
+```
+
+The `aliasFor` element in `@AnnotationConstraint` is the fully qualified classname for the target annotation.
+
 The target annotation's values are mirrored to the alias annotation. The user can validate the alias annotation as if it were the target annotation.
+
+Elements don't need to be included if they aren't needed in the validator.
+
+# Roadmap
+- Add helper methods for logging in `AnnotationValidator`
+- Testing
