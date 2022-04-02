@@ -1,2 +1,2 @@
-com.annotationconstraints.processor.AnnotationConstraintsProcessor
+com.annotationconstraints.processor.AnnotationConstraintProcessor
 com.annotationconstraints.generated.AnnotationConstraintAliasProcessor

@@ -37,7 +37,7 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
 @SupportedAnnotationTypes("com.annotationconstraints.AnnotationConstraint")
-public class AnnotationConstraintsProcessor extends AbstractProcessor
+public class AnnotationConstraintProcessor extends AbstractProcessor
 {
     public static String GENERATED_PACKAGE = "com.annotationconstraints.generated";
     public static String GENERATED_PROCESSOR_SUFFIX = "Processor";
