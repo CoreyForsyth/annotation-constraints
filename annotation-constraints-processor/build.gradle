@@ -6,9 +6,29 @@ plugins {
     id 'annotation-constraints.java-library'
 }
 
+task copyAnnotationConstraintAliasProcessor(dependsOn: build) {
+    doLast {
+        copy {
+            from('build/generated/sources/annotationProcessor/java/main/com/annotationconstraints/generated/AnnotationConstraintAliasProcessor.java')
+            into('src/main/java/com/annotationconstraints/generated')
+        }
+    }
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 dependencies {
     implementation project(':annotation-constraints')
     implementation 'com.squareup:javapoet:1.13.0'
+
+    if (project.hasProperty('copyingAnnotationConstraintAliasProcessor')) {
+        annotationProcessor files("build/libs/annotation-constraints-processor-${version}.jar")
+        annotationProcessor project(':annotation-constraints')
+        annotationProcessor 'com.squareup:javapoet:1.13.0'
+    }
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }

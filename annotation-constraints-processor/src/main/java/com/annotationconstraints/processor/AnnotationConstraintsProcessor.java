@@ -1,5 +1,6 @@
-package com.annotationconstraints;
+package com.annotationconstraints.processor;
 
+import com.annotationconstraints.AnnotationConstraint;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -12,8 +13,10 @@ import com.squareup.javapoet.WildcardTypeName;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +31,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
@@ -45,14 +49,15 @@ public class AnnotationConstraintsProcessor extends AbstractProcessor
         return MethodSpec.methodBuilder("getAnnotationValue")
             .addParameter(AnnotationMirror.class, "annotationMirror")
             .addParameter(String.class, "targetElement")
+            .addParameter(Elements.class, "elements")
             .addCode("return $1T.of(annotationMirror)\n" +
-                "  .map($2T::getElementValues)\n" +
-                "  .map($3T::entrySet)\n" +
-                "  .orElse($4T.emptySet()).stream()\n" +
+                "  .map(elements::getElementValuesWithDefaults)\n" +
+                "  .map($2T::entrySet)\n" +
+                "  .orElse($3T.emptySet()).stream()\n" +
                 "  .filter(kv -> kv.getKey().getSimpleName().contentEquals(targetElement))\n" +
                 "  .findFirst()\n" +
-                "  .map($3T.Entry::getValue)\n" +
-                "  .map($5T::getValue).orElse(null);", Optional.class, AnnotationMirror.class, Map.class, Collections.class, AnnotationValue.class)
+                "  .map($2T.Entry::getValue)\n" +
+                "  .map($4T::getValue).orElse(null);", Optional.class, Map.class, Collections.class, AnnotationValue.class)
             .returns(Object.class)
             .addModifiers(Modifier.STATIC)
             .addModifiers(Modifier.PUBLIC)
@@ -112,6 +117,7 @@ public class AnnotationConstraintsProcessor extends AbstractProcessor
             }
             catch (IOException e)
             {
+                e.printStackTrace();
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Failed to write the generated annotation processor class", userAnnotation);
             }
         }
@@ -150,6 +156,7 @@ public class AnnotationConstraintsProcessor extends AbstractProcessor
         if (isAliasAnnotation)
         {
             builder.addStatement("$T annotationMirror = getAnnotationMirror(element, $S)", AnnotationMirror.class, original);
+            builder.addStatement("$T elements = processingEnv.getElementUtils()", Elements.class);
             TypeSpec.Builder aliasBuilder = TypeSpec.anonymousClassBuilder("")
                 .addSuperinterface(annotationToBeProcessedClassName)
                 .addMethod(MethodSpec.methodBuilder("annotationType")
@@ -163,7 +170,7 @@ public class AnnotationConstraintsProcessor extends AbstractProcessor
                     .addAnnotation(Override.class)
                     .addModifiers(Modifier.PUBLIC)
                     .returns(TypeName.get(executableElement.getReturnType()))
-                    .addStatement("return ($T) getAnnotationValue(annotationMirror, $S)", executableElement.getReturnType(), executableElement.getSimpleName().toString())
+                    .addStatement("return ($T) getAnnotationValue(annotationMirror, $S, elements)", executableElement.getReturnType(), executableElement.getSimpleName().toString())
                     .build());
             });
             builder.addStatement("$T testAnnotation = $L", annotationToBeProcessedClassName, aliasBuilder.build());
@@ -186,14 +193,19 @@ public class AnnotationConstraintsProcessor extends AbstractProcessor
             .endControlFlow()
             .addStatement("return false");
 
+        List<MethodSpec> methodSpecs = new ArrayList<>();
+        methodSpecs.add(getSupportedSourceVersion);
+        methodSpecs.add(builder.build());
+        if (isAliasAnnotation) {
+            methodSpecs.add(getAnnotationValueMethod());
+            methodSpecs.add(getAnnotationMirrorMethod());
+        }
+
         TypeSpec userAnnotationProcessor = TypeSpec.classBuilder(annotationSimpleName + GENERATED_PROCESSOR_SUFFIX)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .addAnnotation(supportedAnnotationTypes)
             .superclass(AbstractProcessor.class)
-            .addMethod(getSupportedSourceVersion)
-            .addMethod(builder.build())
-            .addMethod(getAnnotationValueMethod())
-            .addMethod(getAnnotationMirrorMethod())
+            .addMethods(methodSpecs)
             .build();
 
         return JavaFile.builder(GENERATED_PACKAGE, userAnnotationProcessor).build();
