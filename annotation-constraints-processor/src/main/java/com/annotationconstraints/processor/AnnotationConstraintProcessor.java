@@ -29,6 +29,7 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
@@ -107,9 +108,16 @@ public class AnnotationConstraintProcessor extends AbstractProcessor
         Set<? extends Element> userAnnotations = roundEnv.getElementsAnnotatedWith(AnnotationConstraint.class);
         for (Element userAnnotation : userAnnotations)
         {
+            PackageElement packageOf = processingEnv.getElementUtils().getPackageOf(userAnnotation);
+
+            if (packageOf.getSimpleName().toString().equals("")) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                    String.format("User annotation with @AnnotationConstraint (@%s) cannot be in the default package.", userAnnotation.getSimpleName()), userAnnotation);
+                return false;
+            }
             AnnotationConstraint annotationConstraint = userAnnotation.getAnnotation(AnnotationConstraint.class);
             TypeMirror validator = AnnotationUtil.getTypeMirrorFromAnnotationElement(userAnnotation, AnnotationConstraint.class, "value");
-            JavaFile javaFile = buildConstraintProcesser(userAnnotation, validator, annotationConstraint.aliasFor());
+            JavaFile javaFile = buildConstraintProcessor(userAnnotation, validator, annotationConstraint.aliasFor());
             try
             {
                 javaFile.writeTo(processingEnv.getFiler());
@@ -124,7 +132,7 @@ public class AnnotationConstraintProcessor extends AbstractProcessor
         return false;
     }
 
-    private JavaFile buildConstraintProcesser(Element userAnnotation, TypeMirror annotationValidator, String original)
+    private JavaFile buildConstraintProcessor(Element userAnnotation, TypeMirror annotationValidator, String original)
     {
         boolean isAliasAnnotation = !original.equals("");
         String annotationSimpleName = userAnnotation.getSimpleName().toString();
