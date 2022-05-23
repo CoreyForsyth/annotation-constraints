@@ -79,9 +79,9 @@ In the library that you want to add annotation constraints to, import 'com.annot
 
 Gradle example:
 ```groovy
-compileOnly 'com.annotationconstraints:annotation-constraints-processor:1.0.1'
-annotationProcessor 'com.annotationconstraints:annotation-constraints-processor:1.0.1'
-implementation 'com.annotationconstraints:annotation-constraints:1.0.1'
+compileOnly 'com.annotationconstraints:annotation-constraints-processor:1.0.2'
+annotationProcessor 'com.annotationconstraints:annotation-constraints-processor:1.0.2'
+implementation 'com.annotationconstraints:annotation-constraints:1.0.2'
 ```
 Maven example:
 ```xml
@@ -89,7 +89,7 @@ Maven example:
   <dependency>
     <groupId>com.annotationconstraints</groupId>
     <artifactId>annotation-constraints</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
   </dependency>
 </dependencies>
 ```
@@ -102,7 +102,7 @@ Maven example:
       <path>
         <groupId>com.annotationconstraints</groupId>
         <artifactId>annotation-constraints-processor</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
       </path>
     </annotationProcessorPaths>
     </configuration>
